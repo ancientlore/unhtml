@@ -50,7 +50,6 @@
 		font
 		footer
 		form
-		h1 to h6
 		header
 		html
 		i
@@ -124,6 +123,7 @@
 		blockquote
 		br
 		div
+		h1 to h6
 		hr
 		img
 		li
@@ -150,7 +150,7 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 	z := html.NewTokenizer(in)
 
 	var lastTT html.TokenType = html.CommentToken
-	var newLines int = 0
+	var newLines int = 3
 	var url string = ""
 	var ignore bool = false
 	var reallyIgnore bool = false
@@ -186,9 +186,14 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 				reallyIgnore = true
 			case "script", "title", "link", "meta", "applet", "embed", "frame", "frameset", "iframe", "object", "style":
 				ignore = true
-			case "div", "ul", "tr", "ol", "p", "br", "pre", "table", "blockquote":
+			case "div", "ul", "tr", "ol", "p", "br", "table":
 				if newLines < 2 {
 					fmt.Fprintln(out)
+					newLines++
+				}
+			case "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote":
+				if newLines < 2 {
+					fmt.Fprintln(out, "\n")
 					newLines++
 				}
 			case "li":
@@ -196,7 +201,7 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 					fmt.Fprintln(out)
 				}
 				fmt.Fprint(out, "* ")
-				newLines = 0
+				newLines = 2
 			case "hr":
 				if newLines < 2 {
 					fmt.Fprintln(out)
@@ -248,7 +253,7 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 				reallyIgnore = false
 			case "script", "title", "link", "meta", "applet", "embed", "frame", "frameset", "iframe", "object", "style":
 				ignore = false
-			case "ul", "ol", "pre", "table", "blockquote":
+			case "ul", "ol", "pre", "table", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6":
 				if newLines < 2 {
 					fmt.Fprintln(out, "\n")
 					newLines += 2

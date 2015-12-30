@@ -56,7 +56,6 @@ Ignored tags:
 	font
 	footer
 	form
-	h1 to h6
 	header
 	html
 	i
@@ -132,6 +131,7 @@ Handled tags:
 	blockquote
 	br
 	div
+	h1 to h6
 	hr
 	img
 	li
