@@ -1,5 +1,5 @@
 /*
-	Package unhtml designed to remove HTML tags from text and do minor formatting updates.
+	Package unhtml is designed to remove HTML tags from text and do minor formatting updates.
 	It is intended to avoid changing the text very much - in particular so that it doesn't
 	mess up formatted plain text when HTML tags are not present. This allows you to run the
 	converter on data that you received without needing to bother checking if HTML tags are
