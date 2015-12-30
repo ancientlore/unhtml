@@ -176,20 +176,23 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 		case html.TextToken:
 			if !ignore && !reallyIgnore {
 				text := strings.TrimSpace(string(z.Text()))
+				if text != "" && newLines == 0 {
+					fmt.Fprint(out, " ")
+				}
 				fmt.Fprint(out, text)
 				if text != "" || url != "" {
 					newLines = 0
 				}
 				if url != "" {
-					fmt.Fprintf(out, " (%s) ", url)
+					fmt.Fprintf(out, " (%s)", url)
 					url = ""
 				}
 			}
 		case html.StartTagToken:
 			tag, hasAttr := z.TagName()
-			if lastTT == html.TextToken && newLines == 0 {
-				fmt.Fprint(out, " ")
-			}
+			//if lastTT == html.TextToken && newLines == 0 {
+			//	fmt.Fprint(out, " ")
+			//}
 			switch string(tag) {
 			case "head":
 				reallyIgnore = true
@@ -218,7 +221,7 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 				fmt.Fprintln(out, "---")
 				newLines = 1
 			case "td", "th":
-				fmt.Fprint(out, " ")
+				//fmt.Fprint(out, " ")
 				newLines = 0
 			case "a":
 				if hasAttr {
@@ -246,11 +249,15 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 							alt = string(val)
 						}
 					}
-					if alt != "" {
-						fmt.Fprintf(out, alt)
+					s := " "
+					if newLines > 0 {
+						s = ""
 					}
-					if src != "" {
-						fmt.Fprintf(out, " (%s) ", src)
+					if alt != "" {
+						fmt.Fprintf(out, "%s%s", s, alt)
+						if src != "" {
+							fmt.Fprintf(out, " (%s)", src)
+						}
 					}
 				}
 				newLines = 0
@@ -318,11 +325,10 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 						s = ""
 					}
 					if alt != "" {
-						fmt.Fprintf(out, "%s%s ", s, alt)
-						s = ""
-					}
-					if src != "" {
-						fmt.Fprintf(out, "%s(%s) ", s, src)
+						fmt.Fprintf(out, "%s%s", s, alt)
+						if src != "" {
+							fmt.Fprintf(out, " (%s)", src)
+						}
 					}
 				}
 				newLines = 0
@@ -336,7 +342,7 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 	}
 
 	if lastTT == html.TextToken && url != "" {
-		fmt.Fprintf(out, " (%s) ", url)
+		fmt.Fprintf(out, " (%s)", url)
 	}
 
 	return nil
