@@ -138,11 +138,20 @@
 package unhtml
 
 import (
+	"bytes"
 	"fmt"
 	"golang.org/x/net/html"
 	"io"
 	"strings"
 )
+
+// HtmlToTextString converts a string of HTML into a string of plain text.
+func HtmlToTextString(in string) (string, error) {
+	var buf bytes.Buffer
+	rdr := bytes.NewBufferString(in)
+	err := HtmlToText(rdr, &buf)
+	return string(buf.Bytes()), err
+}
 
 // HtmlToText converts the HTML in the reader to text in the writer.
 func HtmlToText(in io.Reader, out io.Writer) error {
