@@ -1,148 +1,149 @@
 /*
-	Package unhtml is designed to remove HTML tags from text and do minor formatting updates.
-	It is intended to avoid changing the text very much - in particular so that it doesn't
-	mess up formatted plain text when HTML tags are not present. This allows you to run the
-	converter on data that you received without needing to bother checking if HTML tags are
-	in there.
+Package unhtml is designed to remove HTML tags from text and do minor formatting updates.
+It is intended to avoid changing the text very much - in particular so that it doesn't
+mess up formatted plain text when HTML tags are not present. This allows you to run the
+converter on data that you received without needing to bother checking if HTML tags are
+in there.
 
-	That said, the package is primarily intended to handle minor HTML snippets. It isn't a
-	full-fledged formatter. Below are tags that are ignored, handled, and intentionally
-	skipped.
+That said, the package is primarily intended to handle minor HTML snippets. It isn't a
+full-fledged formatter. Below are tags that are ignored, handled, and intentionally
+skipped.
 
-	Ignored tags:
-		(comments)
-		DOCTYPE
-		abbr
-		acronym
-		address
-		area
-		article
-		aside
-		audio
-		b
-		base
-		basefont
-		bdi
-		bdo
-		big
-		body
-		button
-		canvas
-		caption
-		center
-		cite
-		code
-		col
-		colgroup
-		datalist
-		dd
-		del
-		details
-		dfn
-		dialog
-		dir
-		dl
-		dt
-		em
-		fieldset
-		figcaption
-		figure
-		font
-		footer
-		form
-		header
-		html
-		i
-		input
-		ins
-		kbd
-		keygen
-		label
-		legend
-		main
-		map
-		mark
-		menu
-		menuitem
-		meter
-		nav
-		noframes
-		noscript
-		optgroup
-		option
-		output
-		param
-		progress
-		q
-		rp
-		rt
-		ruby
-		s
-		samp
-		section
-		select
-		small
-		source
-		span
-		strike
-		strong
-		sub
-		summary
-		sub
-		summary
-		sup
-		tbody
-		textarea
-		tfoot
-		thead
-		time
-		track
-		tt
-		u
-		var
-		video
-		wbr
+Ignored tags:
+	(comments)
+	DOCTYPE
+	abbr
+	acronym
+	address
+	area
+	article
+	aside
+	audio
+	b
+	base
+	basefont
+	bdi
+	bdo
+	big
+	body
+	button
+	canvas
+	caption
+	center
+	cite
+	code
+	col
+	colgroup
+	datalist
+	dd
+	del
+	details
+	dfn
+	dialog
+	dir
+	dl
+	dt
+	em
+	fieldset
+	figcaption
+	figure
+	font
+	footer
+	form
+	header
+	html
+	i
+	input
+	ins
+	kbd
+	keygen
+	label
+	legend
+	main
+	map
+	mark
+	menu
+	menuitem
+	meter
+	nav
+	noframes
+	noscript
+	optgroup
+	option
+	output
+	param
+	progress
+	q
+	rp
+	rt
+	ruby
+	s
+	samp
+	section
+	select
+	small
+	source
+	span
+	strike
+	strong
+	sub
+	summary
+	sub
+	summary
+	sup
+	tbody
+	textarea
+	tfoot
+	thead
+	time
+	track
+	tt
+	u
+	var
+	video
+	wbr
 
-	Skipped tags:
-		applet
-		embed
-		frame
-		frameset
-		head
-		iframe
-		link
-		meta
-		object
-		script
-		style
-		title
+Skipped tags:
+	applet
+	embed
+	frame
+	frameset
+	head
+	iframe
+	link
+	meta
+	object
+	script
+	style
+	title
 
 
-	Handled tags:
-		a
-		blockquote
-		br
-		div
-		h1 to h6
-		hr
-		img
-		li
-		ol
-		p
-		pre
-		table
-		td
-		th
-		tr
+Handled tags:
+	a
+	blockquote
+	br
+	div
+	h1 to h6
+	hr
+	img
+	li
+	ol
+	p
+	pre
+	table
+	td
+	th
+	tr
 */
 package unhtml
 
 import (
 	"bytes"
 	"fmt"
-	"golang.org/x/net/html"
 	"io"
 	"strings"
+
+	"golang.org/x/net/html"
 )
 
 // HtmlToTextString converts a string of HTML into a string of plain text.
@@ -158,11 +159,13 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 
 	z := html.NewTokenizer(in)
 
-	var lastTT html.TokenType = html.CommentToken
-	var newLines int = 3
-	var url string = ""
-	var ignore bool = false
-	var reallyIgnore bool = false
+	var (
+		lastTT       = html.CommentToken
+		newLines     = 3
+		url          = ""
+		ignore       = false
+		reallyIgnore = false
+	)
 
 	for done := false; !done; {
 		tt := z.Next()
@@ -205,7 +208,8 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 				}
 			case "h1", "h2", "h3", "h4", "h5", "h6", "pre", "blockquote":
 				if newLines < 2 {
-					fmt.Fprintln(out, "\n")
+					fmt.Fprintln(out)
+					fmt.Fprintln(out)
 					newLines++
 				}
 			case "li":
@@ -271,7 +275,8 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 				ignore = false
 			case "ul", "ol", "pre", "table", "blockquote", "h1", "h2", "h3", "h4", "h5", "h6":
 				if newLines < 2 {
-					fmt.Fprintln(out, "\n")
+					fmt.Fprintln(out)
+					fmt.Fprintln(out)
 					newLines += 2
 				}
 			case "hr":
@@ -290,9 +295,11 @@ func HtmlToText(in io.Reader, out io.Writer) error {
 				}
 			case "hr":
 				if newLines < 2 {
-					fmt.Fprintln(out, "\n")
+					fmt.Fprintln(out)
+					fmt.Fprintln(out)
 				}
-				fmt.Fprintln(out, "---\n")
+				fmt.Fprintln(out, "---")
+				fmt.Fprintln(out)
 				newLines = 2
 			case "a":
 				if hasAttr {
