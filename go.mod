@@ -1,5 +1,5 @@
 module github.com/ancientlore/unhtml
 
-require golang.org/x/net v0.0.0-20210119194325-5f4716e94777
+require golang.org/x/net v0.0.0-20210525063256-abc453219eb5
 
 go 1.14
