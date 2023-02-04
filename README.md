@@ -1,8 +1,7 @@
 UNHTML
 ======
 
-[![Build Status](https://travis-ci.org/ancientlore/unhtml.svg?branch=master)](https://travis-ci.org/ancientlore/unhtml)
-[![GoDoc](https://godoc.org/github.com/ancientlore/unhtml?status.svg)](https://godoc.org/github.com/ancientlore/unhtml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/ancientlore/unhtml.svg)](https://pkg.go.dev/github.com/ancientlore/unhtml)
 
 Package unhtml is designed to remove HTML tags from text and do minor formatting updates.
 It is intended to avoid changing the text very much - in particular so that it doesn't
